@@ -1,0 +1,29 @@
+1. Update and Upgrade packages
+sudo apt-get update
+sudo apt-get upgrade
+
+2. Download MariaDB
+sudo apt-get install mariadb-server
+sudo apt-get install default-libmysqlclient-dev 
+
+3. Check MariaDB 
+systemctl status mysql
+
+4. Access DB
+sudo mysql -u root
+
+5. Make DB
+CREATE DATABASE hanium;
+
+6. CHECK IF DB made
+SHOW DATABASES;
+
+7. Make USER
+USE mysql;
+CREATE USER 'hanium'@'%' IDENTIFIED BY '1234';
+
+8. GRANT PRIVILEGES
+GRANT ALL PRIVILEGES ON hanium.*TO'hanium'@'%';
+
+9. REFLASH
+FLUSH PRIVILEGES;
