@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <title>BusyError</title>
+</head>
+<body>
+    <div id="error">
+        {{'{{msg}}'}}
+    <button @click="error();" >OK</button>
+    </div>
+    
+    
+    <script>
+        new Vue({
+            el:'#error',
+            data:{
+                msg:"Did not receive the message queue, please try again",
+            },
+            methods:{
+                error(){
+                type=setInterval(() => {
+                            this.color += "",
+                            location.href= "/"
+                        }, 1000);
+            }}
+
+        })
+    </script>
+</body>
+</html>

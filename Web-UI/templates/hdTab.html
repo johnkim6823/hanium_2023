@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+    <script async src="https://docs.opencv.org/4.5.1/opencv.js"></script>
+    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link href="{{ url_for('static', filename='style_serv.css') }}" rel="stylesheet">
+    <title>Video data Integrity Verification System</title>
+    </head>
+<body>
+<h1>Video data Integrity Verification System</h1>
+
+<div class="main">
+
+
+    <input id="tab1" type="radio" name="tabs" checked>
+    <label for="tab1"><span>Logger</span>
+        <p class="arrow_box">&emsp;
+            Receives the original image, y-frame image, and hashcode from the logger and outputs
+                         </p></label>
+
+    <input id="tab2" type="radio" name="tabs" > 
+    <label for="tab2"><span>Verifier</span>
+        <p class="arrow_box">&emsp;
+            After receiving the latest CID from the server, compare the hash code received from the server with the hash code made from the video data received from the server.   </p>
+    </label>
+    
+  
+    <section id="content1">
+       <font size="5rm"> Image Size: 1280*720</font>
+       <h2> <button value="reqButton" onclick="reqButton()">Request</button></h2>
+
+       <div id="img">
+        <img id="O_refresh" src="static/images/L_original.png" width="47%" height="500px" object-fit: cover;>
+        <img id="Y_refresh" src="static/images/L_Y_frame.png"width="47%" height="500px" object-fit: cover;>
+    </div>
+    <div id="hashc" >
+    <br><font size ="5rm">Hashcode:  <iframe src="static/hash.txt" id="hashcs" frameborder="0" width="100%" ></iframe></font>
+    </div>    
+        
+    
+    </section>
+
+    <section id="content2">   
+        <p><button value="DBButton" onclick="DBButton()">Refresh DB</button></p>
+        <p class="very">
+        <table id= "veryf" border="3" bordercolor="#f3cf98" width ="640" height="320" align = "center" >
+            {% for i in data_list %}
+            <tr>
+                <td width="150" height="50">CID<p class="cid"></p></td>
+                <td><div id="cidon"></div>{{ i[0] }}</td>
+            </tr>
+            <tr>
+                <td width="150" height="50">DB HASH<p class="cid"></p></td>
+                <td><div id="cidon"></div>{{ i[1] }}</td>
+            </tr>
+
+            <tr>
+                <td width="150" height="50">Verified HASH<p class="cid"></p></td>
+                <td><div id="cidon"></div>{{ i[2] }}</td>
+            </tr>
+            
+            <tr>
+                <td width="150" height="70">Result<p class="resultb"></p></td>
+                <td><t style="color: red;"><div >This is wrong code</div></t></td>    
+            </tr>
+            {% endfor %}
+        </table>
+        </p>
+   </section>
+   <script>
+    function DBButton(){
+        axios.get("/hdTab") 
+        .then( response=> $("#veryf").load(location.href + " #veryf"))
+        .catch(error=>alert("ERROR: Please close to WebUI and restart"))
+   
+//setInterval('DBButton()', 5000);
+
+        
+    }
+   </script>
+   <script>
+    function hashc(){  
+        //   object.onchange = function(){myScript};
+        //   object.addEventListener("change", myScript);
+        //   $("#hashc").load(window.location.href + " #hashc");
+    }
+    </script>
+   <!-- <script>
+    setTimeout(function(){
+    location.reload();
+    },1000,
+    clearTimeout,3000); 
+    </script> -->
+   <script>
+    function reqButton(){
+        axios.get("/reqData")
+        .then(response=>axios.get("/confirmHash"))
+        .then(response=>updateImage())
+        .then(response=>update2Image())
+        .then(response=>document.getElementById('hashcs').contentWindow.location.reload())
+        .catch(error=>alert("ERROR: Please close to WebUI and restart"))
+       // window.location.reload();
+    }
+    
+    </script>
+     <script>
+var newImage = new Image();
+newImage.src = "static/images/L_original.png";
+ 
+ function updateImage()
+ {
+ if(newImage.complete) {
+     document.getElementById("O_refresh").src = newImage.src;
+     newImage = new Image();
+     newImage.src = "static/images/L_original.png?t=" + new Date().getTime();
+ }
+ }
+//      </script>
+
+<script>
+var newImage2 = new Image();
+newImage2.src = "static/images/L_Y_frame.png";
+
+function update2Image()
+{
+if(newImage2.complete) {
+ document.getElementById("Y_refresh").src = newImage2.src;
+ //newImage2 = new Image();
+ newImage2.src = "static/images/L_Y_frame.png?t=" + new Date().getTime();
+}
+}
+ </script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Link to load css from static folder of Flask  -->
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+
+    <!--cdn to use Vue, WebFrameWork  -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    
+
+    <!-- axios cdn to call flask functions continuously -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <title>CFG</title>
+</head>
+<body>
+    <h1>Video data integrity verification system</h1>
+    <h2><div class="h1">Choose Your Setting </div></h2>
+
+    <!-- Set up class to load main css  -->
+    <div class="main">
+        
+    <!-- CONFIG value to tab  -->
+    <input  id="tab1" type="radio" name="tabs" checked>
+    <label for="tab1">Type 1</label>
+
+    <input id="tab2" type="radio" name="tabs" > 
+    <label for="tab2">Type 2</label>
+    
+    <!-- Contents in each TAB -->
+    <section id="content1">
+        <p>Type 1</p>  
+        <li>SIZE    HD</li><br>
+        <li>FMT     YUV420</li><br>
+        <li>FPS     10</li><br>
+        <div id="cfg_HD">
+        <button class="btn_hd" @click="red()"  :style="{ 'background-color': color }" >{{'{{msg}}'}}</button>
+        </div>
+    </section>
+
+     <section id="content2">  
+        <p>Type 2</p>  
+        <li>SIZE    VGA</li><br>
+        <li>FMT     YUV420</li><br>
+        <li>FPS     10</li><br>
+        <div id="cfg_VGA">
+        <button class="btn_vga" @click="red()"  :style="{ 'background-color': color }" >{{'{{msg}}'}}</button>
+        </div>
+    </section>
+    </div>
+</div>
+
+<script>
+    // Calling the function of the button with the id of cfg_cif in the TAB content
+    new Vue({
+                el:"#cfg_HD",
+                data:{ 
+                    msg:"Check Type 1",
+                    color:''
+                 },
+                 methods:{
+                    red() {
+                    this.color = "yellow";
+                    var test=setInterval(() => {
+                            this.color += "",
+                            axios.get("/config_hd")
+                        }, 1000);
+                        setTimeout (()=>
+                        {
+                        clearTimeout (test)
+                        axios.get("/recvMq")
+                        .then(response=>this.color = "green")
+                        .then(response=>location.href="/hdTab")
+                        .catch(error=>location.href="/BusyError")
+                        }, 1000 );
+                        this.color += ""
+                            },
+                    
+                    //req hash and recv hash(test)
+                    // getHash() {
+                    // this.color = "yellow";
+                    // var getHash=setInterval(() => {
+                    //         this.color += "",
+                    //         axios.get("/reqHash")
+                    //     }, 3000);
+                    // setTimeout (()=>
+                    //     {
+                    //     clearTimeout (getHash)
+                        
+                    //     location.href="recvHash1"
+                    //     //location.href="hdTab"
+                    //     //this.color="green"
+                    //     }, 6000 );
+                    //         },
+                            },
+                            })
+                            
+
+    // Calling the function of the button with the id of cfg_VGA in the TAB content
+    new Vue({
+                el:"#cfg_VGA",
+                data:{ 
+                    msg:"Check Type 2",
+                    color:''                
+                     },
+                methods:{
+                    red() {
+                    this.color = "yellow";
+                    var test=setInterval(() => {
+                            this.color += "",
+                            axios.get("/config_vga")
+                        }, 1000);
+                        setTimeout (()=>
+                        {
+                        clearTimeout (test)
+                        axios.get("/recvMq")
+                        .then(response=>this.color = "green")
+                        .then(response=>location.href="/vgaTab")
+                        .catch(error=>location.href="/BusyError")
+                        
+                        }, 1000 );
+                        this.color += ""
+                            },
+                    
+                    //req hash and recv hash(test)
+                    // getHash() {
+                    // this.color = "yellow";
+                    // var getHash=setInterval(() => {
+                    //         this.color += "",
+                    //         axios.get("/reqHash")
+                    //     }, 3000);
+                    // setTimeout (()=>
+                    //     {
+                    //     clearTimeout (getHash)
+                        
+                    //     location.href="recvHash2"
+                        
+                    //     //this.color="green"
+                    //     }, 6000 );
+                    //         },
+                            },
+                            })
+</script>
+
+
+</body>
+</html>
